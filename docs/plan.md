@@ -292,6 +292,39 @@ Cheap now, breaking later. All of these ship in v0.1 as inert.
 
 ---
 
+## Post-v0.1 candidates
+
+Not scheduled, not committed to — recorded so they are not rediscovered from scratch.
+
+**A LaTeX theme (Latin Modern / Computer Modern).** Likely the strongest single
+differentiator available to dapper after the wedge itself, because the earliest plausible
+audience is server-rendered reports and paper figures, and that audience already knows what
+it wants figures to look like.
+
+It cannot be done the way Arimo is done. Arimo works because it is metrically identical to
+Arial, which the viewer already has; Latin Modern has no installed twin, so measuring with
+LM metrics and falling back to Times mismeasures every label by far more than L6's error
+budget. The only correct route is embedding the face as a base64 `@font-face`, which
+*inverts* the argument — you are then measuring the font you are guaranteed to ship, so
+measurements become exact rather than approximate.
+
+Both seams already exist and neither needs changing now:
+
+- `Metrics` is opaque with `metrics.custom(...)` (L3) and carries the advance table *and*
+  the font stack as one unit — the correct coupling, since a font stack themed independently
+  of its table silently invalidates every measurement.
+- `Scene.rules` and the `#id`-scoped `<style>` inside `<defs>` (R3) are where an
+  `@font-face` belongs.
+
+So this is a second `Metrics` value plus a `Rule`, not a redesign. The real cost is bytes: a
+full Latin Modern TTF is several hundred KB, acceptable for a single report and not for a
+dashboard of twelve charts, so anything practical wants glyph subsetting — font surgery, a
+genuine project, and firmly after the wedge is proven. matplotlib is the precedent for the
+sequencing: bundle the boring face, make the beloved one opt-in.
+
+Until then, `MarginPolicy.Fixed` (L10) already lets a user render in any font they like by
+specifying margins by hand.
+
 ## Risks, ranked
 
 1. **The schedule.** 375 h is ~10 months solo. *Mitigation:* M3 is a genuine shippable slice; M5 can slip to 0.2.0 at the cost of the headline claim's *proof* for one release, not the claim.
