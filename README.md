@@ -22,14 +22,27 @@ ecosystem's fastest-moving framework and every dashboard built with it needs one
 
 ## The wedge
 
-Vega-Lite validates its grammar with a JSON Schema **at runtime** — you find out a
-channel is invalid for a mark when the chart fails to render. In Gleam the same
-grammar is checked by the compiler.
+**`render : Chart -> String` is pure and total on the BEAM.** No DOM, no headless
+browser, no font engine — and the same `Chart` value renders as an interactive Lustre
+component in the browser. Nobody has this. It is why the JavaScript ecosystem drags a
+headless Chrome around for server-side images; nivo built an SSR HTTP service and
+ECharts a dedicated SSR mode to approximate it.
 
-Second wedge: Gleam compiles to both Erlang and JavaScript. The same chart definition
-renders to a static SVG string server-side (emails, reports, PDFs, no headless browser)
-and hydrates into an interactive Lustre component client-side. No other charting
-library gets this for free.
+Secondary, and stated honestly: no field names, no optional-field merge semantics, no
+forgotten cases, and mark constructors that state their channels. dapper does **not**
+claim compiler-checked chart *validity* — a grammar rules out ungrammatical charts, not
+misleading ones. Semantics live in a total `validate(Chart) -> List(Diagnostic)` beside
+a total `render`.
+
+An earlier version of this README claimed compile-time grammar checking as the primary
+wedge, on the grounds that Vega-Lite validates at runtime. That was wrong — Vega-Lite is
+written in TypeScript and its JSON Schema is a derived artifact. See
+[decision 0001](docs/decisions/0001-positioning.md).
+
+**Accepted cost:** no serialisable spec. Accessor closures and JSON portability are an
+either/or, and accessors win. This forfeits cross-language portability, machine
+enumerability, and "generate on the server, store in a database, render anywhere."
+`Dict(String, Value)` remains a legal `row`.
 
 ## v0.1 scope
 
@@ -47,20 +60,27 @@ Deliberately small. Ship one chart type end-to-end before generalising.
 Animation, interactivity/tooltips, faceting, geo projections, WebGL, streaming data.
 All are v0.2+ once the grammar has settled.
 
-## Open questions
+## Resolved
 
-1. **Data input shape.** `List(Row)` with a decoder, or a column-oriented struct?
-   Column-oriented is faster and matches Vega-Lite; row-oriented is more idiomatic
-   Gleam. Decide before the scale API hardens — it leaks everywhere.
-2. **How typed is too typed?** Enforcing mark/channel compatibility in the type system
-   may produce error messages worse than the bugs they prevent. Prototype the hostile
-   case before committing to it.
-3. **Theming.** Bake in a palette or require the caller to supply one? Accessible
-   defaults in both light and dark are table stakes.
+The kickoff's three open questions are settled — see
+[decision 0001](docs/decisions/0001-positioning.md) and [prior art](docs/prior-art.md).
+
+1. **Data shape** → row-oriented `List(row)` with accessor channels. Columnar forces
+   string field names back into the API.
+2. **How typed is too typed** → compatibility encoded as *arity*, not as a predicate.
+   `bar(x: Discrete(row), y: Continuous(row), …)`.
+3. **Theming** → a typed `Scheme` whose variants encode categorical/sequential/diverging
+   intent, CVD-safe, colours as `Literal | CssVar` with a light/dark pair.
+
+## Documentation
+
+- [`docs/prior-art.md`](docs/prior-art.md) — synthesis of nine charting lineages
+- [`docs/research/`](docs/research/) — the underlying briefs
+- [`docs/decisions/`](docs/decisions/) — accepted decisions
 
 ## Status
 
-Kickoff. Nothing implemented yet.
+Kickoff. Research complete, nothing implemented yet.
 
 ## Development
 
