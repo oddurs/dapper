@@ -11,3 +11,5 @@ gleam_stdlib = ">= 1.0.0 and < 2.0.0"
 
 [dev_dependencies]
 gleeunit = ">= 1.0.0 and < 2.0.0"
+qcheck = ">= 1.0.4 and < 2.0.0"
+birdie = ">= 2.0.2 and < 3.0.0"
