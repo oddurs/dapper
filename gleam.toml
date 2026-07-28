@@ -1,0 +1,13 @@
+name = "dapper"
+version = "0.1.0"
+description = "Grammar-of-graphics charting for Gleam. Type-checked encodings, SVG output, Erlang and JavaScript targets."
+licences = ["Apache-2.0"]
+repository = { type = "github", user = "dillydale", repo = "dapper" }
+
+gleam = ">= 1.17.0"
+
+[dependencies]
+gleam_stdlib = ">= 1.0.0 and < 2.0.0"
+
+[dev_dependencies]
+gleeunit = ">= 1.0.0 and < 2.0.0"
