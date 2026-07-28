@@ -2,7 +2,7 @@ name = "dapper"
 version = "0.1.0"
 description = "Grammar-of-graphics charting for Gleam. Type-checked encodings, SVG output, Erlang and JavaScript targets."
 licences = ["Apache-2.0"]
-repository = { type = "github", user = "dillydale", repo = "dapper" }
+repository = { type = "github", user = "oddurs", repo = "dapper" }
 
 gleam = ">= 1.17.0"
 
