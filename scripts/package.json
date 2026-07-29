@@ -1,0 +1,13 @@
+{
+  "name": "dapper-fixtures",
+  "private": true,
+  "type": "module",
+  "description": "Generates ground-truth fixtures from d3 for dapper's ticks and scale ports. Not part of the published package.",
+  "scripts": {
+    "gen": "node gen-d3-fixtures.mjs"
+  },
+  "dependencies": {
+    "d3-array": "3.2.4",
+    "d3-scale": "4.0.2"
+  }
+}
