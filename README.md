@@ -46,19 +46,36 @@ enumerability, and "generate on the server, store in a database, render anywhere
 
 ## v0.1 scope
 
-Deliberately small. Ship one chart type end-to-end before generalising.
+Deliberately small. Ship one chart type end-to-end before generalising. Full
+sequencing is in [`docs/plan.md`](docs/plan.md).
 
-- [ ] `Scale` — linear, log, time, band/ordinal. Port `d3-scale` semantics.
-- [ ] `Mark` — bar, line, point only.
-- [ ] Encoding channels — x, y, color.
-- [ ] SVG renderer targeting a string (Erlang) and Lustre elements (JS) from shared code.
-- [ ] Axes with tick generation and label collision avoidance.
-- [ ] Snapshot tests via [birdie](https://hexdocs.pm/birdie/) over rendered SVG.
+- [x] `dapper/format` — the one place a `Float` becomes a `String`
+- [x] `dapper/geom` — rectangles as interval endpoints
+- [x] `dapper/ticks` — d3's 1–2–5 algorithm, checked against generated fixtures
+- [x] `dapper/scale` — linear, log, band, point, ordinal, and domain training
+- [ ] `dapper/metrics` — embedded font advance table, identical on both targets
+- [ ] `Scene` and the SVG emitter
+- [ ] `Mark` — bar, then line and point
+- [ ] Encoding channels — x, y, colour
+- [ ] Axes, gridlines and label collision avoidance
+- [ ] `dapper_lustre` — the same `Scene` as Lustre elements
 
 ## Non-goals for v0.1
 
-Animation, interactivity/tooltips, faceting, geo projections, WebGL, streaming data.
-All are v0.2+ once the grammar has settled.
+**Time scales are cut to v0.2** (decision S7). The interval algebra is 60–80
+hours on its own, which is the difference between a shippable v0.1 and a
+fictional schedule. Until then, pass epoch seconds through a continuous channel
+and get numeric labels. `ContinuousKind` reserves the variant inside an opaque
+type, so adding time later is not a breaking change.
+
+Also out: extended-Wilkinson tick selection (its legibility term needs text
+metrics, which would create exactly the ticks-to-layout fixpoint the two-pass
+layout bound exists to forbid), faceting beyond a 1×1 pane grid, statistical
+transforms, sequential and diverging colour schemes, animation, interactivity,
+geo projections, WebGL and streaming data.
+
+Two renderers, one `Scene` — **not** "shared code". They are two independent
+folds over a shared intermediate, held equal by a test.
 
 ## Resolved
 
